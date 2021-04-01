@@ -30,9 +30,7 @@ def test_poc():
     sig4 = bls.Sign(sk4, msg4)
     # The attacker creates the following signatures
     # sig1−2P
-    sig1prime = G2_to_signature(
-        add(signature_to_G2(sig1), neg(multiply(p, 2)))
-    )
+    sig1prime = G2_to_signature(add(signature_to_G2(sig1), neg(multiply(p, 2))))
     # sig2+p
     sig2prime = G2_to_signature(add(signature_to_G2(sig2), p))
     # sig3−p
@@ -88,12 +86,10 @@ def test_poc():
         bls.AggregateVerify(
             [pk12, pk3, pk4], [msg1, msg3], bls.Aggregate([sig12prime, sig34prime])
         ),
-        bls.AggregateVerify(
-            [pk1], [msg1], sig1234prime
-        ),
+        bls.AggregateVerify([pk1], [msg1], sig1234prime),
         bls.AggregateVerify(
             [pk12, pk34], [msg1, msg3], bls.Aggregate([sig12prime, sig34prime])
-        )
+        ),
     )
     m = b"message"
     sig1 = bls.Sign(sk1, m)
@@ -116,3 +112,91 @@ def test_poc():
     print(
         bls.FastAggregateVerify([pk12, pk3], m, bls.Aggregate([sig12prime, sig3prime]))
     )
+
+
+def test_2():
+    sk0 = 1234
+    sk1 = 1111
+    # horcrux keys
+    pk0 = bls.SkToPk(sk0)
+    pk1 = bls.SkToPk(sk1)
+
+    # aggregated_key
+    pk01 = bls._AggregatePKs([pk0, pk1])
+    sk01 = sk0 + sk1
+    m = b"message"
+    m0 = b"message0"
+    m1 = b"message1"
+
+    # one attestation/proposal for attestation/proposal data
+    sig0 = bls.Sign(sk0, m)
+    # another attestation for the *same* attestation/proposal data
+    sig1 = bls.Sign(sk1, m)
+    sigm0 = bls.Sign(sk0, m0)
+    sigm1 = bls.Sign(sk1, m1)
+    sig01 = bls.Sign(sk01, m)
+    # Aggregator aggregates signatueres of pk0 and pk1
+    aggregated_signature = bls.Aggregate([sig0, sig1])
+    # happy case in a validator, get aggregated_signature from aggregator and verifies against
+    # set of pkeys
+    print("# the happy case of an aggregated attestation", bls.FastAggregateVerify([pk0, pk1], m,
+                                                               aggregated_signature))
+
+    print("sk01 by pk34", bls.FastAggregateVerify([pk01], m, sig01))
+    print("sig01 == aggregated_signature ? Yes. So we can aggregate private keys and sign or "
+          "aggregate the signatures will be the same. Yay, Pairing! ", sig01 ==
+          aggregated_signature)
+
+    print("sk01 by pk0, pk1", bls.FastAggregateVerify([pk0, pk1], m, sig01))
+    print("sk01 by pk0", bls.FastAggregateVerify([pk0], m, sig01))
+
+    print(
+        "sig0, sig1 by pk01",
+        bls.FastAggregateVerify([pk01], m, bls.Aggregate([sig0, sig1])),
+    )
+
+    print(
+        "sig0, sig1 by pk0, pk1",
+        bls.FastAggregateVerify([pk0, pk1], m, bls.Aggregate([sig0, sig1])),
+    )
+    print(
+        "sig0, sig1 by pk0, pk1",
+        bls.FastAggregateVerify([pk0, pk1], m, bls.Aggregate([sig0, sig1])),
+    )
+
+    print(
+        "sig0, sig1, sig01 by pk0, pk1",
+        bls.FastAggregateVerify([pk0, pk1], m, bls.Aggregate([sig0, sig1, sig01])),
+    )
+
+    print(
+        "sig1 by pk01",
+        bls.FastAggregateVerify([pk0, pk1], m, bls.Aggregate([sig01])),
+    )
+    print(
+        "AggregateVerify sigm0, sigm1 by pk0, pk1",
+        bls.AggregateVerify([pk0, pk1], [m0, m1], bls.Aggregate([sigm0, sigm1])),
+    )
+
+    print(
+        "AggregateVerify sigm0, sigm1 by pk01",
+        bls.AggregateVerify([pk01], [m0, m1], bls.Aggregate([sigm0, sigm1])),
+    )
+
+    # Eth2 Proposal
+
+    # *_someone* deposits 32ETH to the ETH1 deposit contract with a bls PK as it's validator key
+
+    # need to wait a bit to become an _active_ validator
+
+    # All validators update their list of active validator, including _someone to the list at
+    # some point
+
+    # *_someone* gets randomly selected as proposer and/or aggregator
+
+    # Is it possible for *_someone* to generate conflicting block proposals with an aggregated
+    # signature, that is accepted (=verified to true against some pubkey) but is *not*
+    # traceable back to *_someone*
+
+    # Is it possible for *_someone* pubkeys to generate valid proposals as well of *_someone*
+    # from subkeys (e.g. aggregated summands)?
