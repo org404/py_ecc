@@ -2,6 +2,8 @@ from py_ecc.bls import G2ProofOfPossession as bls
 from py_ecc.bls import G2Basic as bls_basic
 from py_ecc.bls.g2_primitives import *
 from py_ecc.optimized_bls12_381.optimized_curve import *
+from .hash_to_curve import hash_to_G2
+from hashlib import sha256
 
 
 def test_poc():
@@ -200,3 +202,26 @@ def test_2():
 
     # Is it possible for *_someone* pubkeys to generate valid proposals as well of *_someone*
     # from subkeys (e.g. aggregated summands)?
+
+
+def test_inverses():
+    sk0 = 1
+    sk1 = 1111
+    sk2 = 3
+    # horcrux keys
+    one_key = G1_to_pubkey(G1)
+    pk1 = bls.SkToPk(sk1)
+    pk2 = bls.SkToPk(sk2)
+
+    m = b"message"
+    one_sigm = bls.Sign(sk0, m)
+    DST=b'BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_'
+    hash = G2_to_signature(hash_to_G2(m, DST, hash_function=sha256))
+    sigm1 = bls.Sign(sk1, m)
+    sigm2 = bls.Sign(sk2, m)
+    # Aggregator aggregates signatueres of pk0 and pk1
+    aggregated_signature = bls.Aggregate([hash, sigm1, sigm2])
+    # happy case in a validator, get aggregated_signature from aggregator and verifies against
+    # set of pkeys
+    print("# the happy case of an aggregated attestation", bls.FastAggregateVerify([one_key, pk1, pk2], m,
+                                                               bls.Aggregate([hash, sigm1, sigm2])))
