@@ -1,8 +1,11 @@
+import itertools
+
 from py_ecc.bls import G2ProofOfPossession as bls
 from py_ecc.bls.g2_primitives import *
 from py_ecc.optimized_bls12_381.optimized_curve import *
 from py_ecc.bls.hash_to_curve import hash_to_G2
 from hashlib import sha256
+import math
 
 import structlog
 
@@ -14,13 +17,13 @@ def test_partition_of_unity():
     This test shows a weakness in bls.FastAggregateVerify, when private keys are a partition to 1 (1 = sk_0 + .... +
     sk_n % curve_order, with the special case private_key = 1 mod curve_order). If priv_key = 1, anyone can create a
     signature of a messages (withdrawal, slashable casper proposals, etc...) For the general case, under specific
-    circumstances, an attacker (for instance, a malicious aggregator) can create universal forgeries of the
-    aggregated signatures of a subset of validators. In practice, for a set of validators in a committee,
-    who's private_keys sum up to 1. If this is the case can be detected by an attacker without knowledge of any
-    private keys, by analyzing p2p traffic for the property bls.Aggregate([sig0, ..., sign] == message_hash. The
-    likelihood of a partition to be observable in the wild depends on the size of the validator set and p(1),
-    the number of possible partitions of 1 % curve_order. This likelihood is currently being reviewed. For reference:
-    https://doi.org/10.2307/1993300
+    circumstances, an attacker (for instance, a malicious aggregator) can observe and analyze traffic,
+    to create universal forgeries of the aggregated signatures of a subset of validators in the future. In practice,
+    for a set of validators in a committee, who's private_keys sum up to 1. If this is the case can be detected by an
+    attacker without knowledge of any private keys, by analyzing p2p traffic for the property bls.Aggregate([sig0,
+    ..., sign] == message_hash. The likelihood of a partition to be observable in the wild depends on the size of the
+    validator set and p(1), the number of possible partitions of 1 % curve_order. This likelihood is currently being
+    reviewed. For reference: https://doi.org/10.2307/1993300
     """
 
     # boilerplate
@@ -213,3 +216,15 @@ def test_aggregated_pubkeys():
 
     # Is it possible for *_someone* pubkeys to generate valid proposals as well of *_someone*
     # from subkeys (e.g. aggregated summands)?
+
+
+def test_partions_mod_m():
+    modulus = 19
+    counter = 0
+    for k in range(modulus):
+        subsets = list(itertools.combinations(range(modulus), k))
+        for subset in subsets:
+            if sum(subset) % modulus == 1:
+                counter += 1
+                print(subset)
+    print("counter", counter)
