@@ -1,15 +1,30 @@
-import itertools
+from itertools import combinations, count, islice
+from math import sqrt
+import numpy
 
 from py_ecc.bls import G2ProofOfPossession as bls
 from py_ecc.bls.g2_primitives import *
 from py_ecc.optimized_bls12_381.optimized_curve import *
 from py_ecc.bls.hash_to_curve import hash_to_G2
 from hashlib import sha256
-import math
+from timeit import default_timer as timer
 
 import structlog
 
 log = structlog.get_logger()
+
+
+def primes(n):
+    """ Returns  a list of primes < n """
+    sieve = [True] * n
+    for i in range(3, int(n ** 0.5) + 1, 2):
+        if sieve[i]:
+            sieve[i * i:: 2 * i] = [False] * ((n - i * i - 1) // (2 * i) + 1)
+    return [2] + [i for i in range(3, n, 2) if sieve[i]]
+
+
+def is_prime(n):
+    return n > 1 and all(n % i for i in islice(count(2), int(sqrt(n) - 1)))
 
 
 def test_partition_of_unity():
@@ -94,7 +109,6 @@ def test_partition_of_unity():
     assert bls.Aggregate(signatures) == message_hash
     assert bls.FastAggregateVerify(public_keys, m, message_hash)
     assert not bls.AggregateVerify(public_keys, m, message_hash)
-
 
     log.msg(
         "For the general case, if 1 = (sk_0 + .... + sk_n) % curve_order, the aggregated signature is just the hash "
@@ -218,13 +232,52 @@ def test_aggregated_pubkeys():
     # from subkeys (e.g. aggregated summands)?
 
 
-def test_partions_mod_m():
-    modulus = 19
-    counter = 0
-    for k in range(modulus):
-        subsets = list(itertools.combinations(range(modulus), k))
-        for subset in subsets:
-            if sum(subset) % modulus == 1:
-                counter += 1
-                print(subset)
-    print("counter", counter)
+def test_partitions_of_1_mod_m():
+
+    moduli = primes(30)
+    for modulus in moduli:
+        assert is_prime(modulus)
+    for modulus in moduli:
+        power_set_size = 2 ** modulus
+        partition_set_size = 0
+        partitions = []
+        for k in range(modulus):
+            subsets = list(combinations(range(modulus), k))
+            for subset in subsets:
+                if sum(subset) % modulus == 1:
+                    partitions.append(subset)
+                    partition_set_size += 1
+                    # log.msg("found a partition of unity", length=k, subset=subset)
+        partition_ratio = partition_set_size / power_set_size
+        mean_partition_length = numpy.mean([len(partition) for partition in partitions])
+        median_partition_length = numpy.median(
+            [len(partition) for partition in partitions]
+        )
+        log.msg(
+            "Results",
+            modulus=modulus,
+            power_set_size=power_set_size,
+            partition_set_size=partition_set_size,
+            median_partition_length=median_partition_length,
+            mean_partition_length=mean_partition_length,
+            partition_ratio=partition_ratio,
+        )
+
+
+# profile the addition of public keys coming from a (given or randomly generated) set of private keys
+def test_sum_pks():
+    for i in range(100):
+        sks = numpy.random.randint(1, 10 ** 18, 2048)  # 10**18 is the max of numpy randint
+        pks = [bls.SkToPk(sk.item()) for sk in sks]
+        start = timer()
+        sum_pks = bls._AggregatePKs(pks)
+        sum_pks_G1 = pubkey_to_G1(sum_pks)
+        if eq(sum_pks_G1, G1):
+            log.msg("sum is one key", pks=pks, sum_pks=sum_pks)
+        elif is_inf(sum_pks_G1):
+            log.msg("sum is is_inf key", pks=pks, sum_pks=sum_pks)
+        end = timer()
+        log.msg(
+            "time ",
+            verification_result=end - start,
+        )
