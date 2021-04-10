@@ -1,0 +1,18 @@
+[package]
+name = "fast_compute"
+version = "0.1.0"
+authors = ["kittyandrew <kitty@maudrew.dev>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "fast_compute"
+crate-type = ["cdylib"]
+
+[dependencies]
+itertools = "0.10.0"
+
+[dependencies.cpython]
+version = "0.5"
+features = ["extension-module"]
