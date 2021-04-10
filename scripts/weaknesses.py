@@ -1,4 +1,5 @@
 from itertools import combinations, count, islice
+from collections import defaultdict, OrderedDict
 from math import sqrt, factorial
 import numpy
 
@@ -66,23 +67,48 @@ def combinations_size(n, r):
     return int(factorial(n) / (factorial(n - r) * factorial(r)))
 
 
+# "Array-less" median evaluation
+def median_from_dict(d: dict):
+    values_sorted = OrderedDict(sorted(d.items(), key=lambda t: t[0]))
+    index = sum(values_sorted.values()) / 2
+    even = index.is_integer()
+    x = True
+    median = 0
+    for value, occurences in values_sorted.items():
+        index -= occurences
+        if index < 0 and x is True:
+            median = value
+            break
+        elif index == 0 and even is True:
+            median = value / 2
+            x = False
+        elif index < 0 and x is False:
+            median += value / 2
+            break
+    return median
+
 #
 # Rust lib 'fast_compute' contains identical function to this one, but
-# since it's a compiled python-native shared library I expect Rust to
+# since that's a compiled python-native shared library I expect Rust to
 # be much faster.
 # Comparison:
-#     Python of primes(30):  54.320 s
-#     Rust of primes(30):    14.638 s
+#     Python of primes(30):  50.227 s
+#     Rust of primes(30):    12.812 s
 #
-#def compute(modulus, k):
-#    set_size = 0
-#    lengths = []
-#    for subset in combinations(range(modulus), k):
-#        if sum(subset) % modulus == 1:
-#            set_size += 1
-#            lengths.append(len(subset))
-#    return set_size, lengths
-#
+def compute(modulus, k):
+    set_size = 0
+    lengths = defaultdict(lambda: 0)
+    for subset in combinations(range(modulus), k):
+        if sum(subset) % modulus == 1:
+            set_size += 1
+            lengths[len(subset)] += 1
+    # This looks very weird.. they are all the same numbers (lengths).. This might
+    # easily be very interesting question to research for optimization.
+    # print(f"Differnet values: {len(lengths)} (or {set_size}). Unique values: {len(set(lengths))}.")
+
+    # We have to transform defaultdict back into normal one, because
+    # pickle doesn't know how to send it over socket.
+    return set_size, dict(lengths.items())
 
 
 def test_partitions_of_1_mod_m():
@@ -104,22 +130,31 @@ def test_partitions_of_1_mod_m():
         assert is_prime(modulus)
 
     for modulus in moduli:
+        epoch_start = timer()
+
         power_set_size = 2 ** modulus
         partition_set_size = 0
-        lengths = []
+        lengths = defaultdict(lambda: 0)
 
+        # Computing all the values concurrently and then just summing up results.
         with Pool() as pool:
-            # using python:
-            # res = pool.starmap(compute, ((modulus, k) for k in range(modulus)))
+            # using python (not recommended):
+            # f = compute
             # using rust:
-            res = pool.starmap(rcompute, ((modulus, k) for k in range(modulus)))
+            f = rcompute
+
+            res = pool.starmap(f, ((modulus, k) for k in range(modulus)))
             for ss, l in res:
                 partition_set_size += ss
-                lengths.extend(l)
+                for k, v in l.items():
+                    lengths[k] += v
 
         partition_ratio = partition_set_size / power_set_size
-        mean_partition_length = numpy.mean(lengths)
-        median_partition_length = numpy.median(lengths)
+        # Since we are storing everything in dictionary, it's better to use direct mean and median formulas.
+        #mean_partition_length = numpy.mean(lengths)
+        mean_partition_length = sum(map(lambda x: x[0] * x[1], lengths.items())) / sum(lengths.values())
+        #median_partition_length = numpy.median(lengths)
+        median_partition_length = median_from_dict(lengths)
 
         log.info(
             "Results",
@@ -130,6 +165,11 @@ def test_partitions_of_1_mod_m():
             mean_partition_length=mean_partition_length,
             partition_ratio=partition_ratio,
         )
+
+        # Log time it took to compute this iteration, but make sure to eliminate spam on the start.
+        epoch_time_delta = timer() - epoch_start
+        if epoch_time_delta > 60:
+            log.info("Time took this epoch", epoch_time_seconds=timer() - epoch_start)
     log.info("Finished", total_time=timer() - init)
 
 

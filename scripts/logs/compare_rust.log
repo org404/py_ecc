@@ -1,13 +1,13 @@
-2021-04-10 18:44:27 [info     ] Init                           number_of_cpus=8
-2021-04-10 18:44:27 [info     ] Got primes                     amount_of_primes=10 primes=[2, 3, 5, 7, 11, 13, 17, 19, 23, 29] took_to_generate=0.00030977799906395376
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=1.0 median_partition_length=1.0 modulus=2 partition_ratio=0.25 partition_set_size=1 power_set_size=4
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=1.5 median_partition_length=1.5 modulus=3 partition_ratio=0.25 partition_set_size=2 power_set_size=8
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=2.5 median_partition_length=2.5 modulus=5 partition_ratio=0.1875 partition_set_size=6 power_set_size=32
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=3.5 median_partition_length=3.5 modulus=7 partition_ratio=0.140625 partition_set_size=18 power_set_size=128
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=5.5 median_partition_length=5.5 modulus=11 partition_ratio=0.0908203125 partition_set_size=186 power_set_size=2048
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=6.5 median_partition_length=6.5 modulus=13 partition_ratio=0.076904296875 partition_set_size=630 power_set_size=8192
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=8.5 median_partition_length=8.5 modulus=17 partition_ratio=0.0588226318359375 partition_set_size=7710 power_set_size=131072
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=9.5 median_partition_length=9.5 modulus=19 partition_ratio=0.052631378173828125 partition_set_size=27594 power_set_size=524288
-2021-04-10 18:44:27 [info     ] Results                        mean_partition_length=11.5 median_partition_length=11.5 modulus=23 partition_ratio=0.04347825050354004 partition_set_size=364722 power_set_size=8388608
-2021-04-10 18:44:41 [info     ] Results                        mean_partition_length=14.5 median_partition_length=14.5 modulus=29 partition_ratio=0.03448275849223137 partition_set_size=18512790 power_set_size=536870912
-2021-04-10 18:44:41 [info     ] Finished                       total_time=14.63866524399782
+2021-04-10 21:02:29 [info     ] Init                           number_of_cpus=8
+2021-04-10 21:02:29 [info     ] Got primes                     amount_of_primes=10 primes=[2, 3, 5, 7, 11, 13, 17, 19, 23, 29] took_to_generate=0.0005299440017552115
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=1.0 median_partition_length=1 modulus=2 partition_ratio=0.25 partition_set_size=1 power_set_size=4
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=1.5 median_partition_length=1.5 modulus=3 partition_ratio=0.25 partition_set_size=2 power_set_size=8
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=2.5 median_partition_length=2.5 modulus=5 partition_ratio=0.1875 partition_set_size=6 power_set_size=32
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=3.5 median_partition_length=3.5 modulus=7 partition_ratio=0.140625 partition_set_size=18 power_set_size=128
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=5.5 median_partition_length=5.5 modulus=11 partition_ratio=0.0908203125 partition_set_size=186 power_set_size=2048
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=6.5 median_partition_length=6.5 modulus=13 partition_ratio=0.076904296875 partition_set_size=630 power_set_size=8192
+2021-04-10 21:02:29 [info     ] Results                        mean_partition_length=8.5 median_partition_length=8.5 modulus=17 partition_ratio=0.0588226318359375 partition_set_size=7710 power_set_size=131072
+2021-04-10 21:02:30 [info     ] Results                        mean_partition_length=9.5 median_partition_length=9.5 modulus=19 partition_ratio=0.052631378173828125 partition_set_size=27594 power_set_size=524288
+2021-04-10 21:02:30 [info     ] Results                        mean_partition_length=11.5 median_partition_length=11.5 modulus=23 partition_ratio=0.04347825050354004 partition_set_size=364722 power_set_size=8388608
+2021-04-10 21:02:42 [info     ] Results                        mean_partition_length=14.5 median_partition_length=14.5 modulus=29 partition_ratio=0.03448275849223137 partition_set_size=18512790 power_set_size=536870912
+2021-04-10 21:02:42 [info     ] Finished                       total_time=12.81208942199737
