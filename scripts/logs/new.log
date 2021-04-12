@@ -1,0 +1,31 @@
+2021-04-10 22:46:14 [info     ] Got primes                     amount_of_primes=168 took_to_generate=0.00047883399929560255
+2021-04-10 22:46:14 [info     ] Started running                modulus=2
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=1.0 median_partition_length=1 modulus=2 partition_ratio=0.25 partition_set_size=1 power_set_size=4
+2021-04-10 22:46:14 [info     ] Started running                modulus=3
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=1.5 median_partition_length=1.5 modulus=3 partition_ratio=0.25 partition_set_size=2 power_set_size=8
+2021-04-10 22:46:14 [info     ] Started running                modulus=5
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=2.5 median_partition_length=2.5 modulus=5 partition_ratio=0.1875 partition_set_size=6 power_set_size=32
+2021-04-10 22:46:14 [info     ] Started running                modulus=7
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=3.5 median_partition_length=3.5 modulus=7 partition_ratio=0.140625 partition_set_size=18 power_set_size=128
+2021-04-10 22:46:14 [info     ] Started running                modulus=11
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=5.5 median_partition_length=5.5 modulus=11 partition_ratio=0.0908203125 partition_set_size=186 power_set_size=2048
+2021-04-10 22:46:14 [info     ] Started running                modulus=13
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=6.5 median_partition_length=6.5 modulus=13 partition_ratio=0.076904296875 partition_set_size=630 power_set_size=8192
+2021-04-10 22:46:14 [info     ] Started running                modulus=17
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=8.5 median_partition_length=8.5 modulus=17 partition_ratio=0.0588226318359375 partition_set_size=7710 power_set_size=131072
+2021-04-10 22:46:14 [info     ] Started running                modulus=19
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=9.5 median_partition_length=9.5 modulus=19 partition_ratio=0.052631378173828125 partition_set_size=27594 power_set_size=524288
+2021-04-10 22:46:14 [info     ] Started running                modulus=23
+2021-04-10 22:46:14 [info     ] Results                        mean_partition_length=11.5 median_partition_length=11.5 modulus=23 partition_ratio=0.04347825050354004 partition_set_size=364722 power_set_size=8388608
+2021-04-10 22:46:14 [info     ] Started running                modulus=29
+2021-04-10 22:46:19 [info     ] Results                        mean_partition_length=14.5 median_partition_length=14.5 modulus=29 partition_ratio=0.03448275849223137 partition_set_size=18512790 power_set_size=536870912
+2021-04-10 22:46:19 [info     ] Started running                modulus=31
+2021-04-10 22:46:38 [info     ] Results                        mean_partition_length=15.5 median_partition_length=15.5 modulus=31 partition_ratio=0.03225806448608637 partition_set_size=69273666 power_set_size=2147483648
+2021-04-10 22:46:38 [info     ] Started running                modulus=37
+2021-04-10 23:06:50 [info     ] Results                        mean_partition_length=18.5 median_partition_length=18.5 modulus=37 partition_ratio=0.027027027026633732 partition_set_size=3714566310 power_set_size=137438953472
+2021-04-10 23:06:50 [info     ] Started running                modulus=41
+2021-04-11 05:28:25 [info     ] Results                        mean_partition_length=20.5 median_partition_length=20.5 modulus=41 partition_ratio=0.02439024390241684 partition_set_size=53634713550 power_set_size=2199023255552
+2021-04-11 05:28:25 [info     ] Started running                modulus=43
+2021-04-12 02:05:08 [info     ] Results                        mean_partition_length=21.5 median_partition_length=21.5 modulus=43 partition_ratio=0.023255813953483084 partition_set_size=204560302842 power_set_size=8796093022208
+2021-04-12 02:05:08 [info     ] Started running                modulus=47
+
